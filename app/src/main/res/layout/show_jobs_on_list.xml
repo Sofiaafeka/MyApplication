@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/menubackground"
+    android:orientation="vertical">
+
+   <Spinner
+        android:id="@+id/sort_spinner"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:entries="@array/sort_options"/>
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+       android:layout_below="@+id/sort_spinner"
+        android:fillViewport="true" >
+        <LinearLayout
+            android:id="@+id/scrollViewLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" />
+    </ScrollView>
+
+</RelativeLayout>

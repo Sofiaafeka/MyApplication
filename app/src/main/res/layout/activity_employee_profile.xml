@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mProfileFormView"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/menubackground"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.jobSearchApp.android.EmployeeProfile">
+
+        <TextView
+            android:id="@+id/tvfname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="שם פרטי: "
+            android:textSize="18dp"
+            android:typeface="serif" />
+
+        <EditText
+            android:id="@+id/firstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:textDirection="rtl"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tvlname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="שם משפחה: "
+            android:textSize="18dp"
+            android:typeface="serif" />
+
+        <EditText
+            android:id="@+id/lastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:textDirection="rtl"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tvYearBirth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="שנת לידה: "
+            android:textSize="18dp"
+            android:typeface="serif" />
+
+        <EditText
+            android:id="@+id/yearBirth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords"
+            android:textDirection="rtl"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/tvhome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="מקום מגורים: "
+            android:textDirection="rtl"
+            android:textSize="18dp"
+            android:typeface="serif" />
+
+        <fragment
+            android:id="@+id/seeker_place_autocomplete_fragment"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="השכלה: "
+            android:textDirection="rtl"
+            android:textSize="18dp"
+            android:typeface="serif" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/full_matriculation"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="בגרות מלאה"
+                android:textSize="18dp" />
+
+            <RadioButton
+                android:id="@+id/partial_matriculation"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="בגרות חלקית"
+                android:textSize="18dp" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal"
+            android:paddingBottom="10dp">
+
+            <Spinner
+                android:id="@+id/degree_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/degreeType"
+                android:layoutDirection="rtl" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="תחום: "
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:typeface="serif" />
+
+            <EditText
+                android:id="@+id/fieldOfStudy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords"
+                android:textDirection="rtl"
+                android:textSize="18dp" />
+        </LinearLayout>
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/textViewExpertises"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="תחום התמחות: "
+            android:textSize="18dp"
+            android:typeface="serif" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow android:layoutDirection="rtl">
+
+                <Spinner
+                    android:id="@+id/expert1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textDirection="rtl" />
+
+                <Spinner
+                    android:id="@+id/expert1_years_exp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/expert1"
+                    android:textDirection="rtl" />
+            </TableRow>
+
+            <TableRow android:layoutDirection="rtl">
+
+                <Spinner
+                    android:id="@+id/expert2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textDirection="rtl" />
+
+                <Spinner
+                    android:id="@+id/expert2_years_exp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/expert2"
+                    android:textDirection="rtl" />
+            </TableRow>
+
+            <TableRow android:layoutDirection="rtl">
+
+                <Spinner
+                    android:id="@+id/expert3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textDirection="rtl" />
+
+                <Spinner
+                    android:id="@+id/expert3_years_exp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@id/expert3"
+                    android:textDirection="rtl" />
+            </TableRow>
+        </TableLayout>
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tvloc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="מקום עבודה מועדף: "
+            android:textDirection="rtl"
+            android:textSize="18dp"
+
+            android:typeface="serif" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl">
+
+            <Spinner
+                android:id="@+id/regions_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Spinner
+                android:id="@+id/sub_regions_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/regions_spinner" />
+        </RelativeLayout>
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" תפקיד רצוי:"
+            android:textDirection="rtl"
+            android:textSize="18dp"
+            android:typeface="serif" />
+        <!--  jobPositions spinner   !-->
+        <Spinner
+            android:id="@+id/job_position_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingBottom="10dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ציפיות שכר: "
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:typeface="serif" />
+
+            <Spinner
+                android:id="@+id/salarySpin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textDirection="rtl" />
+        </LinearLayout>
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/immediate_available"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="זמינות מיידית"
+                android:textSize="18dp" />
+
+            <RadioButton
+                android:id="@+id/no_immediate_available"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="זמינות חלקית"
+                android:textSize="18dp" />
+        </RadioGroup>
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal"
+            android:textSize="18dp">
+
+            <RadioButton
+                android:id="@+id/full_time_pos"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="משרה מלאה"
+                android:textSize="18dp" />
+
+            <RadioButton
+                android:id="@+id/partial_time_pos"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="משרה חלקית"
+                android:textSize="18dp" />
+        </RadioGroup>
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/mobile"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="נייד ברכב"
+                android:textSize="18dp" />
+
+            <RadioButton
+                android:id="@+id/no_mobile"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="בלתי נייד"
+                android:textSize="18dp" />
+        </RadioGroup>
+
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <!--
+                <Button
+               android:id="@+id/cvBtn"
+               android:gravity="bottom"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Upload CV"
+               />
+
+               !-->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="קישור לתיק עבודות:"
+            android:textDirection="rtl"
+            android:textSize="18dp"
+            android:typeface="serif" />
+
+        <EditText
+            android:id="@+id/url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textSize="18dp"
+            android:typeface="serif" />
+
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="שמור"
+            android:textSize="18dp" />
+
+        <ProgressBar
+            android:id="@+id/progress_animation"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</ScrollView>
+
+

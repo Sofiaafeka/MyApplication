@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:background="@drawable/menubackground"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/progress_animation"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/menubackground">
+
+        <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/mProfileJobFormView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layoutDirection="rtl"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context="com.jobSearchApp.android.JobProfile">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="שם משרה:"
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+
+            <EditText
+                android:id="@+id/job_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:inputType="textCapWords"
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" תפקיד רצוי:"
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+            <!--  jobPositions spinner   !-->
+            <Spinner
+                android:id="@+id/job_position_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="אזור משרה:"
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layoutDirection="rtl">
+
+                <Spinner
+                    android:id="@+id/regions_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Spinner
+                    android:id="@+id/sub_regions_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/regions_spinner" />
+            </RelativeLayout>
+            <fragment
+                android:id="@+id/job_preffered_address_autocomplete_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="תחומי התמחות:"
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="10dp">
+
+                <TableRow android:layoutDirection="rtl">
+
+                    <Spinner
+                        android:id="@+id/expert1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textDirection="rtl" />
+
+                    <Spinner
+                        android:id="@+id/expert1_years_exp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/expert1"
+                        android:textDirection="rtl" />
+                </TableRow>
+
+                <TableRow android:layoutDirection="rtl">
+
+                    <Spinner
+                        android:id="@+id/expert2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textDirection="rtl" />
+
+                    <Spinner
+                        android:id="@+id/expert2_years_exp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/expert2"
+                        android:textDirection="rtl" />
+                </TableRow>
+
+                <TableRow android:layoutDirection="rtl">
+
+                    <Spinner
+                        android:id="@+id/expert3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textDirection="rtl" />
+
+                    <Spinner
+                        android:id="@+id/expert3_years_exp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toLeftOf="@id/expert3"
+                        android:textDirection="rtl" />
+                </TableRow>
+            </TableLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="תיאור משרה:"
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+
+            <EditText
+                android:id="@+id/job_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="10dp"
+                android:inputType="textCapWords|textMultiLine"
+                android:textDirection="rtl"
+                android:textSize="18dp" />
+            <TextView
+                android:id="@+id/txtViewCandidates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="רשימת מועמדים: "
+                android:textDirection="rtl"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:typeface="serif" />
+            <LinearLayout
+                android:id="@+id/candidate_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layoutDirection="rtl" />
+            <Button
+                android:id="@+id/saveBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="שמור"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

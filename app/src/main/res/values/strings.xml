@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">אפליקציה לחיפוש עבודה</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">כניסה</string>
+    <string name="title_activity_profile">הפרופיל שלי</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">מייל</string>
+    <string name="prompt_password">סיסמה</string>
+    <string name="action_sign_in">כניסה </string>
+    <string name="action_sign_in_short">כניסה</string>
+    <string name="error_invalid_email">כתובת מייל לא תקינה</string>
+    <string name="error_invalid_password">הסיסמה קצרה מדי</string>
+    <string name="error_incorrect_password">סיסמה לא תקינה</string>
+    <string name="error_field_required">שדה דרוש</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="service_url">"http://gilad.xn----9hcgbicpob9d1bf.co.il/"</string>
+    <!--<string name="service_url">"http://jsa.apphb.com/"</string>-->
+
+
+    <string-array name="salaries">
+        <item>7000-11000</item>
+        <item>10000-20000</item>
+        <item>20000 ומעלה</item>
+    </string-array>
+    <string-array name="sort_options">
+        <item>שם משרה</item>
+        <item>מיקום</item>
+        <item>משכורת</item>
+        <item>דרגת התאמה</item>
+    </string-array>
+    <string-array name="degreeType">
+        <item></item>
+        <item>תואר ראשון</item>
+        <item>תואר שני</item>
+        <item>תואר שלישי</item>
+        <item>הנדסאי</item>
+        <item>סטודנט</item>
+    </string-array>
+
+    <string name="title_activity_applying_for_job">Applying_for_job</string>
+    <string name="title_activity_apply_for_job">Apply_for_job</string>
+    <string name="title_activity_show_jobs">ShowJobsActivity</string>
+    <string name="context_choice">Sort jobs by....</string>
+    <string name="title_activity_jobs_on_map">Map</string>
+    <string name="title_activity_tabbed_job_show">TabbedJobShowActivity</string>
+
+
+</resources>

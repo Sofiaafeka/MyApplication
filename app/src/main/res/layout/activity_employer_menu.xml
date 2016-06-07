@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/menubackground"
+    tools:context="com.jobSearchApp.android.EmployerMenuActivity">
+
+    <Button
+        android:id="@+id/add_job"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="25dp"
+        android:fontFamily="Arial"
+        android:textColor="@color/colorAccent"
+        android:textDirection="rtl"
+        android:text="הוספת משרה חדשה"/>
+    <Button
+        android:id="@+id/show_jobs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="25dp"
+        android:fontFamily="Arial"
+        android:layout_below="@+id/add_job"
+        android:textDirection="rtl"
+        android:text="המשרות שלי"/>
+    <Button
+        android:id="@+id/log_out"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorAccent"
+        android:textSize="25dp"
+        android:fontFamily="Arial"
+        android:layout_below="@+id/show_jobs"
+        android:textDirection="rtl"
+        android:text="התנתק"/>
+</RelativeLayout>
+
+
+

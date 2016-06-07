@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/menubackground">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:id="@+id/popup"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+    android:paddingRight="10dp"
+    android:layoutDirection="rtl"
+    android:background="@drawable/menubackground">
+
+        <TextView
+            android:id="@+id/jobName"
+            android:textColor="@color/wallet_bright_foreground_holo_light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textDirection="rtl"
+            android:text=""
+            android:paddingBottom="10dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/jobDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textDirection="rtl"
+            android:text=""
+            android:paddingBottom="10dp"
+          />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:text="תפקיד: "
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/jobPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:text=""
+        android:paddingBottom="10dp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:text="דרישות משרה:"
+        android:textStyle="bold"
+        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layoutDirection="rtl">
+    <TextView
+        android:id="@+id/jobSkill1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:text=""
+        android:paddingLeft="10dp"
+        />
+    <TextView
+        android:id="@+id/jobYearsSkill1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:text=""
+        />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layoutDirection="rtl">
+        <TextView
+            android:id="@+id/jobSkill2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textDirection="rtl"
+            android:text=""
+            android:paddingLeft="10dp"
+            />
+        <TextView
+            android:id="@+id/jobYearsSkill2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textDirection="rtl"
+            android:text=""
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layoutDirection="rtl"
+        android:paddingBottom="10dp">
+        <TextView
+            android:id="@+id/jobSkill3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textDirection="rtl"
+            android:text=""
+            android:paddingLeft="10dp"
+            />
+        <TextView
+            android:id="@+id/jobYearsSkill3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textDirection="rtl"
+            android:text=""
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:text="מיקום משרה:"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/jobAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:text=""
+        android:paddingBottom="10dp"
+        />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" >
+        <Button
+            android:id="@+id/applyToJob"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textDirection="rtl"
+            android:text="הגשת מועמדות" />
+    <Button
+        android:id="@+id/requestTraining"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:text="פניה לחברת הכשרה" />
+        </LinearLayout>
+    <Button
+        android:id="@+id/setInterviewOnCalendar"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textDirection="rtl"
+        android:visibility="gone"
+        android:text="הוסף אירוע  ללוח שנה שלי" />
+
+
+</LinearLayout>
+</ScrollView>

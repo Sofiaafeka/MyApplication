@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "701869132339",
+    "firebase_url": "https://folkloric-light-129116.firebaseio.com",
+    "project_id": "folkloric-light-129116",
+    "storage_bucket": "folkloric-light-129116.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:701869132339:android:37d2c131256bde69",
+        "android_client_info": {
+          "package_name": "com.jobSearchApp.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "701869132339-f01emouqm96lodhpdhigatiedshtn8l7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYbvYQo146pui8oWYTlxfwHx6Rih-EbDU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
