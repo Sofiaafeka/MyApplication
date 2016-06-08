@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.jobSearchApp.android.Common.ServerHelper;
 import com.jobSearchApp.android.ServiceAPI.CommonAPI;
 import com.jobSearchApp.android.ServiceAPI.EmployerAPI;
 import com.jobSearchApp.android.ServiceModels.AllCommonInfo;
@@ -42,6 +44,7 @@ import com.jobSearchApp.android.ServiceModels.Skill;
 import com.jobSearchApp.android.ServiceModels.SkillExperience;
 
 import java.io.IOException;
+import java.util.Date;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -58,6 +61,7 @@ public class JobProfile extends AppCompatActivity {
     View mProfileJobFormView, mProgressView;
     LinearLayout candidatesListLayout;
     TextView txtViewCandidates;
+    TextView candidateNameTxt;
     EditText jobName, jobDescription;
     Button saveBtn;
 
@@ -109,7 +113,6 @@ public class JobProfile extends AppCompatActivity {
         txtViewCandidates = (TextView) findViewById(R.id.txtViewCandidates);
         candidatesListLayout = (LinearLayout)findViewById(R.id.candidate_list);
 
-        // showPopupCandidate(seekerInfo.Id);
 
         autocompleteFragmentJobAddress = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.job_preffered_address_autocomplete_fragment);
@@ -287,6 +290,19 @@ public class JobProfile extends AppCompatActivity {
 
         // Displaying the popup at the specified location, + offsets.
         popUp.showPopup(Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y, candidateId, jobId);
+        popUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                String candidateInterviewDate =  popUp.getInterviewDate();;
+                if(candidateInterviewDate != null) {
+                    String candidateName = candidateNameTxt.getText().toString();
+                    candidateNameTxt.setText(candidateName + "" +
+                            "הוזמן לראיון בתאריך: "   + candidateInterviewDate);
+                }
+
+            }
+        });
+
     }
 
     @Override
@@ -433,7 +449,7 @@ public class JobProfile extends AppCompatActivity {
      /* Showing the list of candidates in edit mode */
        if(isJobEditMode()){
            for(final SeekerInfo candidate: jobDetail.Candidates) {
-               TextView candidateNameTxt = new TextView(getBaseContext());
+               candidateNameTxt = new TextView(getBaseContext());
                candidateNameTxt.setText(candidate.FullName);
                candidateNameTxt.setTextColor(Color.BLACK);
                candidateNameTxt.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));

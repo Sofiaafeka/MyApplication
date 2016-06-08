@@ -50,7 +50,6 @@ public class SeekerJobsApplied extends AppCompatActivity {
         setContentView(R.layout.activity_seeker_jobs_applied);
 
         layout = (LinearLayout) findViewById(R.id.linear_layout_appliedJobs);
-        cancelJobApply = (Button) findViewById(R.id.cancelJobApply);
 
         loadJobList();
     }
@@ -159,6 +158,13 @@ public class SeekerJobsApplied extends AppCompatActivity {
 
         // Displaying the popup at the specified location, + offsets.
         popUp.showPopup(Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y, jobId);
+        popUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if(popUp.getIsApplyRemoved())
+                    loadJobList();
+            }
+        });
     }
 
 }

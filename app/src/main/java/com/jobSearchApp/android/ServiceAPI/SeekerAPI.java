@@ -37,5 +37,7 @@ public interface SeekerAPI {
     @POST("/api/Seeker/training")
     Call<Void> requestTraining(@Body TrainingRequest trainingRequest);
 
+    @POST("/api/Seeker/rejectInterview")
+    Call<Void> rejectInterview(@Body int jobId);
 }
 

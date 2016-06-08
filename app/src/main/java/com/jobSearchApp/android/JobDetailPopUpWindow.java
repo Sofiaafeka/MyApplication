@@ -46,13 +46,14 @@ public class JobDetailPopUpWindow extends PopupWindow {
     private Button applyToJobBtn;
     private Button requestTrainingBtn;
     private Button addToCalendarBtn;
-    Button cancelJobApply;
+    private Button cancelJobApply;
     private TextView jobName, jobDescription, jobPosition, jobSkill1, jobSkill2, jobSkill3,
             jobYearsSkill1, jobYearsSkill2, jobYearsSkill3, jobAddress;
     private Activity activity;
     private JobDetailPopupType popupType;
     private int jobId;
     private JobDetail jobDetails;
+    private boolean applyRemoved;
 
     public enum JobDetailPopupType {
         SEEK_JOB, APPLYED_TO
@@ -75,6 +76,7 @@ public class JobDetailPopUpWindow extends PopupWindow {
         applyToJobBtn = (Button) layout.findViewById(R.id.applyToJob);
         requestTrainingBtn = (Button) layout.findViewById(R.id.requestTraining);
         addToCalendarBtn = (Button) layout.findViewById(R.id.setInterviewOnCalendar);
+        cancelJobApply = (Button) layout.findViewById(R.id.cancelJobApply);
 
         jobName = (TextView) layout.findViewById(R.id.jobName);
         jobDescription = (TextView) layout.findViewById(R.id.jobDescription);
@@ -92,6 +94,7 @@ public class JobDetailPopUpWindow extends PopupWindow {
                 applyToJobBtn.setVisibility(View.GONE);
                 requestTrainingBtn.setVisibility(View.GONE);
                 addToCalendarBtn.setVisibility(View.VISIBLE);
+                cancelJobApply.setVisibility(View.VISIBLE);
                 break;
             case SEEK_JOB:
                 break;
@@ -224,40 +227,47 @@ public class JobDetailPopUpWindow extends PopupWindow {
         });
 
         cancelJobApply.setOnClickListener(new View.OnClickListener() {
-                                              @Override
-                     public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
 
-                    // check if already invited to an interview
-                  // and if is - delete from calendar
+                // check if already invited to an interview
+                // and if is - delete from calendar
 
-                  //request  server delete candidate job apply
-                  SeekerAPI seekerAPI = ServiceGenerator.createServiceWithAuth(SeekerAPI.class);
-                   ApplyJobInfo applyJobInfo = new ApplyJobInfo();
-                      applyJobInfo.SetApply = false;
-                       Call<Void> call = seekerAPI.applyJob(applyJobInfo);
-                       call.enqueue(new Callback<Void>() {
-                           @Override
-                           public void onResponse(Response<Void> response, Retrofit retrofit) {
-                               if (response.isSuccess()) {
+                //request  server delete candidate job apply
+                SeekerAPI seekerAPI = ServiceGenerator.createServiceWithAuth(SeekerAPI.class);
+                ApplyJobInfo applyJobInfo = new ApplyJobInfo();
+                applyJobInfo.SetApply = false;
+                applyJobInfo.JobId = jobId;
+                Call<Void> call = seekerAPI.applyJob(applyJobInfo);
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Response<Void> response, Retrofit retrofit) {
+                        if (response.isSuccess()) {
+                            applyRemoved = true;
+                            dismiss();
 
-                               } else
-                                   Toast.makeText(activity.getBaseContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
-                           }
+                        } else
+                            Toast.makeText(activity.getBaseContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
+                    }
 
-                           @Override
-                           public void onFailure(Throwable t) {
-                               Toast.makeText(activity.getBaseContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                           }
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Toast.makeText(activity.getBaseContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
 
-                           // delete job from jobs applied list
+                    // delete job from jobs applied list
 
-                       }
-                                              }
-
+                });
+            }
         });
-
-
     }
+
+    public boolean getIsApplyRemoved(){
+        return applyRemoved;
+    }
+
+
+
 
     /* Presenting to seeker the details of the selected job */
 

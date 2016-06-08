@@ -36,6 +36,7 @@ public class CandidatePopUpWindow extends PopupWindow {
     private String candidateId;
     private int jobId;
     private Button interviewRqstBtn;
+    Calendar calendar;
 
     private Activity activity;
     private View layout;
@@ -98,7 +99,7 @@ public class CandidatePopUpWindow extends PopupWindow {
                 DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
                 TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
 
-                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                 calendar = new GregorianCalendar(datePicker.getYear(),
                         datePicker.getMonth(),
                         datePicker.getDayOfMonth(),
                         timePicker.getCurrentHour(),
@@ -108,6 +109,10 @@ public class CandidatePopUpWindow extends PopupWindow {
             }});
         alertDialog.setView(dialogView);
         alertDialog.show();
+    }
+    public String getInterviewDate(){
+        DateFormat df = new SimpleDateFormat("dd/MM/yy");
+        return df.format(calendar.getTime());
     }
 
     private void sendInterviewRequest(Date date, final Dialog dialog) {
@@ -156,7 +161,7 @@ public class CandidatePopUpWindow extends PopupWindow {
 
                 if (response.isSuccess()) {
                     Seeker candidate = response.body();
-                    // setting job description
+
                     setCandidate(candidate);
 
                 } else {
