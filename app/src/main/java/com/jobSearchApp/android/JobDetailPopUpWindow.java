@@ -1,18 +1,13 @@
 package com.jobSearchApp.android;
 
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.graphics.Color;
 import android.provider.CalendarContract;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,13 +21,15 @@ import android.widget.Toast;
 import com.jobSearchApp.android.Common.ServerHelper;
 import com.jobSearchApp.android.ServiceAPI.SeekerAPI;
 import com.jobSearchApp.android.ServiceModels.ApplyJobInfo;
+import com.jobSearchApp.android.ServiceModels.InterviewResponse;
 import com.jobSearchApp.android.ServiceModels.JobDetail;
-import com.jobSearchApp.android.ServiceModels.JsaInterviewStatus;
-import com.jobSearchApp.android.ServiceModels.Seeker;
+import com.jobSearchApp.android.ServiceModels.InterviewStatus;
 import com.jobSearchApp.android.ServiceModels.ServiceGenerator;
 import com.jobSearchApp.android.ServiceModels.SkillExperience;
 import com.jobSearchApp.android.ServiceModels.TrainingRequest;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import retrofit.Call;
@@ -43,12 +40,14 @@ import retrofit.Retrofit;
 public class JobDetailPopUpWindow extends PopupWindow {
 
     private View layout;
+    LinearLayout interviewInfoLayout;
     private Button applyToJobBtn;
     private Button requestTrainingBtn;
     private Button addToCalendarBtn;
-    private Button cancelJobApply;
+    private Button cancelJobApply, rejectInterview;
     private TextView jobName, jobDescription, jobPosition, jobSkill1, jobSkill2, jobSkill3,
             jobYearsSkill1, jobYearsSkill2, jobYearsSkill3, jobAddress;
+    private TextView interviewInfoTxt;
     private Activity activity;
     private JobDetailPopupType popupType;
     private int jobId;
@@ -77,6 +76,9 @@ public class JobDetailPopUpWindow extends PopupWindow {
         requestTrainingBtn = (Button) layout.findViewById(R.id.requestTraining);
         addToCalendarBtn = (Button) layout.findViewById(R.id.setInterviewOnCalendar);
         cancelJobApply = (Button) layout.findViewById(R.id.cancelJobApply);
+        interviewInfoLayout = (LinearLayout) layout.findViewById(R.id.interviewInfoLayout);
+        rejectInterview = (Button) layout.findViewById(R.id.rejectInterview);
+        interviewInfoTxt = (TextView) layout.findViewById(R.id.interviewInfoTxt);
 
         jobName = (TextView) layout.findViewById(R.id.jobName);
         jobDescription = (TextView) layout.findViewById(R.id.jobDescription);
@@ -93,7 +95,7 @@ public class JobDetailPopUpWindow extends PopupWindow {
             case APPLYED_TO:
                 applyToJobBtn.setVisibility(View.GONE);
                 requestTrainingBtn.setVisibility(View.GONE);
-                addToCalendarBtn.setVisibility(View.VISIBLE);
+                interviewInfoLayout.setVisibility(View.VISIBLE);
                 cancelJobApply.setVisibility(View.VISIBLE);
                 break;
             case SEEK_JOB:
@@ -208,21 +210,14 @@ public class JobDetailPopUpWindow extends PopupWindow {
             @Override
             public void onClick(View v) {
 
-                Calendar beginTime = Calendar.getInstance();
-                beginTime.setTime(ServerHelper.dateFromTicks(jobDetails.InterviewInfo.ScheduleDate));
-                Calendar endTime = Calendar.getInstance();
-                endTime.setTime(ServerHelper.dateFromTicks(jobDetails.InterviewInfo.ScheduleDate));
-                endTime.add(Calendar.HOUR, 1);
-                Intent intent = new Intent(Intent.ACTION_INSERT)
-                        .setData(CalendarContract.Events.CONTENT_URI)
-                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                        .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                        .putExtra(CalendarContract.Events.TITLE, "Interview")
-                        .putExtra(CalendarContract.Events.EVENT_LOCATION, jobAddress.getText().toString());
+                respondToInterview(true);
+            }
+        });
 
-
-                activity.startActivity(intent);
-
+        rejectInterview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                respondToInterview(false);
             }
         });
 
@@ -254,15 +249,12 @@ public class JobDetailPopUpWindow extends PopupWindow {
                     public void onFailure(Throwable t) {
                         Toast.makeText(activity.getBaseContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                     }
-
-                    // delete job from jobs applied list
-
                 });
             }
         });
     }
 
-    public boolean getIsApplyRemoved(){
+    public boolean getIsApplyRemoved() {
         return applyRemoved;
     }
 
@@ -302,9 +294,86 @@ public class JobDetailPopUpWindow extends PopupWindow {
         if (jobDetails.Location != null)
             jobAddress.setText(jobDetails.Location.Address);
 
-        if (jobDetails.InterviewInfo == null || jobDetails.InterviewInfo.Status != JsaInterviewStatus.PENDING.getValue()) {
-            addToCalendarBtn.setVisibility(View.GONE);
+        if (jobDetails.InterviewInfo != null) {
+
+            InterviewStatus status = InterviewStatus.fromInteger(jobDetails.InterviewInfo.Status);
+            DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm");
+            switch (status) {
+                case PENDING:
+                    interviewInfoTxt.setVisibility(View.VISIBLE);
+                    interviewInfoTxt.setText("הזמנה לראיון בתאריך: " + df.format(ServerHelper.dateFromTicks(jobDetails.InterviewInfo.ScheduleDate)));
+                    interviewInfoTxt.setTextColor(Color.MAGENTA);
+                    interviewInfoTxt.setPadding(15, 0, 15, 20);
+                    interviewInfoLayout.setVisibility(View.VISIBLE);
+                    break;
+
+                case ACCEPTED:
+                    interviewInfoTxt.setVisibility(View.VISIBLE);
+                    interviewInfoLayout.setVisibility(View.GONE);
+                    interviewInfoTxt.setText("ראיון בתאריך:  " + df.format(ServerHelper.dateFromTicks(jobDetails.InterviewInfo.ScheduleDate)));
+                    interviewInfoTxt.setTextColor(Color.GREEN);
+                    interviewInfoTxt.setPadding(15, 0, 15, 20);
+                    break;
+
+                case REJECTED:
+                    interviewInfoTxt.setVisibility(View.VISIBLE);
+                    interviewInfoLayout.setVisibility(View.GONE);                    interviewInfoTxt.setText("נשלחה בקשה לקביעת ראיון חדש");
+                    interviewInfoTxt.setTextColor(Color.RED);
+                    interviewInfoTxt.setPadding(15, 0, 15, 20);
+                    break;
+
+                default:
+                    interviewInfoLayout.setVisibility(View.GONE);
+                    break;
+            }
         }
+    }
+
+    private void respondToInterview(final boolean accept) {
+        InterviewResponse interviewResponse = new InterviewResponse();
+        interviewResponse.Accept = accept;
+        interviewResponse.JobId = jobId;
+
+        SeekerAPI seekerAPI = ServiceGenerator.createServiceWithAuth(SeekerAPI.class);
+        Call<Void> call = seekerAPI.RespondToInterview(interviewResponse);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    if (accept) {
+                        Calendar beginTime = Calendar.getInstance();
+                        beginTime.setTime(ServerHelper.dateFromTicks(jobDetails.InterviewInfo.ScheduleDate));
+                        Calendar endTime = Calendar.getInstance();
+                        endTime.setTime(ServerHelper.dateFromTicks(jobDetails.InterviewInfo.ScheduleDate));
+                        endTime.add(Calendar.HOUR, 1);
+                        Intent intent = new Intent(Intent.ACTION_INSERT)
+                                .setData(CalendarContract.Events.CONTENT_URI)
+                                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                                .putExtra(CalendarContract.Events.TITLE, "Interview")
+                                .putExtra(CalendarContract.Events.EVENT_LOCATION, jobAddress.getText().toString());
+
+
+                        activity.startActivity(intent);
+                        jobDetails.InterviewInfo.Status = InterviewStatus.ACCEPTED.getValue();
+                    } else {// job interview rejected by seeker
+                        Toast.makeText(activity.getBaseContext(), "דחייתך התקבלה, הודעה נשלחה למעסיק", Toast.LENGTH_LONG).show();
+                        jobDetails.InterviewInfo.Status = InterviewStatus.REJECTED.getValue();
+
+                    }
+
+                    setJobDetails(jobDetails);
+                } else {// response from server not success
+                    Toast.makeText(activity.getBaseContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(activity.getBaseContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
     public void showPopup(int gravity, int x, int y, final int jobId) {
