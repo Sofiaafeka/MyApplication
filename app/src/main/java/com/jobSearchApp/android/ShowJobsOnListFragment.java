@@ -9,6 +9,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -16,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,10 +38,12 @@ import retrofit.Retrofit;
 public class ShowJobsOnListFragment extends Fragment {
 
     ScrollView scrollView;
-    TextView textView;//for job name
+    TextView jobNameTextView, matchingLevel;//for job name text and matching level number
+    /* for holding textview of job name
+    /* and  matching level number on the same row*/
     LinearLayout layout;
     JobDetailPopUpWindow popUp;
-    List<View> viewList = new ArrayList<>();
+    //List<View> viewList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -53,8 +58,6 @@ public class ShowJobsOnListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         scrollView = (ScrollView) view.findViewById(R.id.scrollview);
         layout = (LinearLayout) view.findViewById(R.id.scrollViewLayout);
-
-
     }
 
     @Override
@@ -81,13 +84,35 @@ public class ShowJobsOnListFragment extends Fragment {
 
                 if (response.isSuccess()) {
                     for (final JobInfo job : response.body()) {
-                        textView = new TextView(getContext());
-                        textView.setText(job.Name);
-                        textView.setTextColor(Color.BLACK);
-                        textView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-                        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                        textView.setPadding(15, 15, 15, 15);
-                        textView.setTextDirection(View.TEXT_DIRECTION_RTL);
+                        jobNameTextView = new TextView(getContext());
+                        matchingLevel = new TextView(getContext());
+               /* layout parameters to show in one row the name and match number  */
+                        RelativeLayout relativeLayout = new RelativeLayout(getContext());
+                        relativeLayout.setLayoutParams(new
+                                LayoutParams(LayoutParams.MATCH_PARENT,
+                                LayoutParams.WRAP_CONTENT));
+                        LayoutParams layoutParams_AlignLeft =
+                                new LayoutParams(LayoutParams.MATCH_PARENT,
+                                        LayoutParams.WRAP_CONTENT);
+                        layoutParams_AlignLeft.addRule(RelativeLayout.ALIGN_LEFT);
+                        matchingLevel.setLayoutParams(layoutParams_AlignLeft);
+                        LayoutParams layoutParams_AlignRight =
+                                new LayoutParams(LayoutParams.MATCH_PARENT,
+                                        LayoutParams.WRAP_CONTENT);
+                        layoutParams_AlignRight.addRule(RelativeLayout.ALIGN_RIGHT);
+                        matchingLevel.setLayoutParams(layoutParams_AlignRight);
+                        jobNameTextView.setText(job.Name);
+                        matchingLevel.setText(job.MatchLevel + "");
+                        jobNameTextView.setTextColor(Color.BLACK);
+                        matchingLevel.setTextColor(Color.BLACK);
+                        jobNameTextView.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                        matchingLevel.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                        jobNameTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        matchingLevel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        jobNameTextView.setPadding(15, 15, 15, 15);
+                        matchingLevel.setPadding(15, 15, 15, 15);
+                        jobNameTextView.setTextDirection(View.TEXT_DIRECTION_RTL);
+                        matchingLevel.setTextDirection(View.TEXT_DIRECTION_LTR);
                         View horizontalRule = new View(getContext());
                         horizontalRule.setLayoutParams(new LinearLayout.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -97,7 +122,7 @@ public class ShowJobsOnListFragment extends Fragment {
                         horizontalRule.setBackgroundColor(Color.BLUE);
 
                         // Listener for clicking on a job name
-                        textView.setOnClickListener(new View.OnClickListener() {
+                        jobNameTextView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 //Open popup window
@@ -105,13 +130,15 @@ public class ShowJobsOnListFragment extends Fragment {
 
                             }
                         });
-                        layout.addView(textView);
+                        relativeLayout.addView(jobNameTextView, layoutParams_AlignRight);
+                        relativeLayout.addView(matchingLevel, layoutParams_AlignLeft);
+                        layout.addView(relativeLayout);
                         layout.addView(horizontalRule);
-                        viewList.add(textView);
-                        viewList.add(horizontalRule);
+                        /*viewList.add(jobNameTextView);
+                        viewList.add(matchingLevel);
+                        viewList.add(horizontalRule);*/
                     }
-                }
-                else
+                } else
                     Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
             }
 
