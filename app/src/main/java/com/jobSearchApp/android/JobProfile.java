@@ -15,6 +15,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -34,6 +35,7 @@ import com.jobSearchApp.android.Common.ServerHelper;
 import com.jobSearchApp.android.ServiceAPI.CommonAPI;
 import com.jobSearchApp.android.ServiceAPI.EmployerAPI;
 import com.jobSearchApp.android.ServiceModels.AllCommonInfo;
+import com.jobSearchApp.android.ServiceModels.InterviewStatus;
 import com.jobSearchApp.android.ServiceModels.JobDetail;
 import com.jobSearchApp.android.ServiceModels.JobDetailExtended;
 import com.jobSearchApp.android.ServiceModels.LocationModel;
@@ -44,6 +46,8 @@ import com.jobSearchApp.android.ServiceModels.Skill;
 import com.jobSearchApp.android.ServiceModels.SkillExperience;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import retrofit.Call;
@@ -61,7 +65,6 @@ public class JobProfile extends AppCompatActivity {
     View mProfileJobFormView, mProgressView;
     LinearLayout candidatesListLayout;
     TextView txtViewCandidates;
-    TextView candidateNameTxt;
     EditText jobName, jobDescription;
     Button saveBtn;
 
@@ -111,15 +114,15 @@ public class JobProfile extends AppCompatActivity {
         expertYears3 = (Spinner) findViewById(R.id.expert3_years_exp);
 
         txtViewCandidates = (TextView) findViewById(R.id.txtViewCandidates);
-        candidatesListLayout = (LinearLayout)findViewById(R.id.candidate_list);
+        candidatesListLayout = (LinearLayout) findViewById(R.id.candidate_list);
 
 
         autocompleteFragmentJobAddress = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.job_preffered_address_autocomplete_fragment);
 
         saveBtn = (Button) findViewById(R.id.saveBtn);
-        
-        if(!isJobEditMode()){
+
+        if (!isJobEditMode()) {
             txtViewCandidates.setVisibility(View.GONE);
             candidatesListLayout.setVisibility(View.GONE);
         }
@@ -209,10 +212,10 @@ public class JobProfile extends AppCompatActivity {
 
         Call<Void> call = null;
 
-        if(isJobEditMode())
+        if (isJobEditMode())
             call = empAPI.updateJob(jobDetail);
         else
-            call =  empAPI.addJob(jobDetail);
+            call = empAPI.addJob(jobDetail);
 
         showProgress(true);
         call.enqueue(new Callback<Void>() {
@@ -221,7 +224,7 @@ public class JobProfile extends AppCompatActivity {
                 if (response.isSuccess()) {
 
                     String message = isJobEditMode() ? "המשרה עודכנה בהצלחה!" : "המשרה הוספה בהצלחה!";
-                    Toast.makeText(getBaseContext(),message , Toast.LENGTH_LONG).show();
+                    Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
                     finish();
 
                 }
@@ -293,11 +296,11 @@ public class JobProfile extends AppCompatActivity {
         popUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                String candidateInterviewDate =  popUp.getInterviewDate();;
-                if(candidateInterviewDate != null) {
-                    String candidateName = candidateNameTxt.getText().toString();
-                    candidateNameTxt.setText(candidateName + "" +
-                            "הוזמן לראיון בתאריך: "   + candidateInterviewDate);
+                Date newInterviewDate = popUp.getInterviewDate();
+                ;
+                if (newInterviewDate != null) {
+                    GetInfoTask task = new GetInfoTask();
+                    task.execute((Void) null);
                 }
 
             }
@@ -398,13 +401,14 @@ public class JobProfile extends AppCompatActivity {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void setJobDetail(JobDetailExtended jobDetail) {
         this.jobDetail = jobDetail;
 
         jobName.setText(jobDetail.Name);
         jobDescription.setText(jobDetail.Description);
 
-        ArrayAdapter<CharSequence> adapter =(ArrayAdapter<CharSequence>) jobPosition.getAdapter();
+        ArrayAdapter<CharSequence> adapter = (ArrayAdapter<CharSequence>) jobPosition.getAdapter();
         int pos = adapter.getPosition(jobDetail.JobPosition);
 
         jobPosition.setSelection(pos);
@@ -447,26 +451,62 @@ public class JobProfile extends AppCompatActivity {
         }
 
      /* Showing the list of candidates in edit mode */
-       if(isJobEditMode()){
-           for(final SeekerInfo candidate: jobDetail.Candidates) {
-               candidateNameTxt = new TextView(getBaseContext());
-               candidateNameTxt.setText(candidate.FullName);
-               candidateNameTxt.setTextColor(Color.BLACK);
-               candidateNameTxt.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
-               candidateNameTxt.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-               candidateNameTxt.setPadding(15, 15, 15, 15);
+        if (isJobEditMode()) {
+            if (candidatesListLayout.getChildCount() > 0)
+                candidatesListLayout.removeAllViews();
 
-               candidateNameTxt.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View v) {
-                       showPopupCandidate(candidate.Id);
-                   }
-               });
+            for (int i = 0; i < jobDetail.Candidates.size(); i++) {
+                final SeekerInfo candidate = jobDetail.Candidates.get(i);
+                TextView candidateNameTxt = new TextView(getBaseContext());
+                candidateNameTxt.setText(candidate.FullName);
+                candidateNameTxt.setTextColor(Color.BLACK);
+                candidateNameTxt.setTextDirection(View.TEXT_DIRECTION_RTL);
+                candidateNameTxt.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                candidateNameTxt.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+                candidateNameTxt.setPadding(15, 15, 15, 15);
 
+                candidateNameTxt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showPopupCandidate(candidate.Id);
+                    }
+                });
 
-               candidatesListLayout.addView(candidateNameTxt);
-           }
-       }
+                candidatesListLayout.addView(candidateNameTxt);
+
+                if (candidate.InterviewInfo != null) {
+                    TextView txtInvitation = new TextView(getBaseContext());
+                    DateFormat df = new SimpleDateFormat("dd/MM/yy H:mm");
+                    txtInvitation.setPadding(15, 0, 15, 20);
+
+                    InterviewStatus status = InterviewStatus.fromInteger(candidate.InterviewInfo.Status);
+                    switch (status) {
+                        case PENDING:
+                            txtInvitation.setText("ראיון בהמתנה לאישור: "+ df.format(ServerHelper.dateFromTicks(candidate.InterviewInfo.ScheduleDate)));
+                            txtInvitation.setTextColor(Color.MAGENTA);
+                            break;
+                        case ACCEPTED:
+                            txtInvitation.setText("ראיון אושר: "+ df.format(ServerHelper.dateFromTicks(candidate.InterviewInfo.ScheduleDate)));
+                            txtInvitation.setTextColor(Color.GREEN);
+                            break;
+                        case REJECTED:
+                            txtInvitation.setText("ראיון נדחה: " + df.format(ServerHelper.dateFromTicks(candidate.InterviewInfo.ScheduleDate)));
+                            txtInvitation.setTextColor(Color.RED);
+                            break;
+                    }
+
+                    candidatesListLayout.addView(txtInvitation);
+                }
+                /* separator line for jobs list view*/
+                if(i != jobDetail.Candidates.size() - 1) {
+                    View horizontalRule = new View(getBaseContext());
+                    horizontalRule.setLayoutParams(new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT, 2));
+                    horizontalRule.setBackgroundColor(Color.BLUE);
+                    candidatesListLayout.addView(horizontalRule);
+                }
+            }
+        }
     }
 
     public void setSkills(Skill[] skills) {
