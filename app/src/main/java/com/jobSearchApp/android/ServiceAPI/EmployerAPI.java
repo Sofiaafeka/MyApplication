@@ -36,7 +36,7 @@ public interface EmployerAPI {
     Call<JobDetailExtended> getJobDetail(@Query("jobId") int jobId);
 
     @POST("/api/Employer/deleteJob")
-    Call<Void> deleteJob(@Body int jobId);
+    Call<Void> deleteJob(@Query("jobId") int jobId);
 
     @GET("/api/Employer/seeker")
     Call<Seeker> getCandidate(@Query("seekerId") String seekerId, @Query("jobId") int jobId);
