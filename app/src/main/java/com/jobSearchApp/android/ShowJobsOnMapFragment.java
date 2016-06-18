@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -92,11 +93,28 @@ public class ShowJobsOnMapFragment extends android.support.v4.app.Fragment
             public void onResponse(Response<List<JobInfo>> response, Retrofit retrofit) {
 
                 if (response.isSuccess()) {
+
                     for (final JobInfo job : response.body()) {
                         if (job.Location != null) {
                             // Add a marker in coherent job position
+                            // and color indicates matching level
                             LatLng jobPosition = new LatLng(job.Location.GeoLatitude, job.Location.GeoLongitude);
-                            Marker jobMarker = mMap.addMarker(new MarkerOptions().position(jobPosition).title(job.Name));
+
+                            if(job.MatchLevel >= 6)
+                              mMap.addMarker(new
+                                    MarkerOptions().position(jobPosition).title(job.Name)
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                            else if(job.MatchLevel > 3 && job.MatchLevel < 6)
+                                 mMap.addMarker(new
+                                        MarkerOptions().position(jobPosition).title(job.Name)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                            else
+                                 mMap.addMarker(new
+                                        MarkerOptions().position(jobPosition).title(job.Name)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+
+
 
                             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
 
