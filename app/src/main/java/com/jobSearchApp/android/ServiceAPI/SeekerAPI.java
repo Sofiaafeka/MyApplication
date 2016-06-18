@@ -2,6 +2,7 @@ package com.jobSearchApp.android.ServiceAPI;
 
 
 import com.jobSearchApp.android.ServiceModels.ApplyJobInfo;
+import com.jobSearchApp.android.ServiceModels.InterviewResponse;
 import com.jobSearchApp.android.ServiceModels.JobDetail;
 import com.jobSearchApp.android.ServiceModels.JobInfo;
 import com.jobSearchApp.android.ServiceModels.Seeker;
@@ -37,7 +38,7 @@ public interface SeekerAPI {
     @POST("/api/Seeker/training")
     Call<Void> requestTraining(@Body TrainingRequest trainingRequest);
 
-    @POST("/api/Seeker/rejectInterview")
-    Call<Void> rejectInterview(@Body int jobId);
+    @POST("/api/Seeker/interviewResponse")
+    Call<Void> RespondToInterview(@Body InterviewResponse interviewResponse);
 }
 

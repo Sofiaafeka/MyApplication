@@ -4,9 +4,7 @@ import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -14,7 +12,6 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -22,9 +19,8 @@ import android.widget.Toast;
 
 import com.jobSearchApp.android.Common.ServerHelper;
 import com.jobSearchApp.android.ServiceAPI.SeekerAPI;
-import com.jobSearchApp.android.ServiceModels.ApplyJobInfo;
 import com.jobSearchApp.android.ServiceModels.JobInfo;
-import com.jobSearchApp.android.ServiceModels.JsaInterviewStatus;
+import com.jobSearchApp.android.ServiceModels.InterviewStatus;
 import com.jobSearchApp.android.ServiceModels.ServiceGenerator;
 
 import java.text.DateFormat;
@@ -40,7 +36,7 @@ import retrofit.Retrofit;
 public class SeekerJobsApplied extends AppCompatActivity {
 
     LinearLayout layout;
-    TextView textView, txtInvitation;
+    TextView textView, txtInvitation, emptyJobListMeesage;
     JobDetailPopUpWindow popUp;
     List<View> viewList = new ArrayList<>();
 
@@ -50,6 +46,7 @@ public class SeekerJobsApplied extends AppCompatActivity {
         setContentView(R.layout.activity_seeker_jobs_applied);
 
         layout = (LinearLayout) findViewById(R.id.linear_layout_appliedJobs);
+        emptyJobListMeesage = (TextView) findViewById(R.id.emptyJobListMessage);
 
         loadJobList();
     }
@@ -74,6 +71,13 @@ public class SeekerJobsApplied extends AppCompatActivity {
             public void onResponse(Response<List<JobInfo>> response, Retrofit retrofit) {
 
                 if (response.isSuccess()) {
+
+                    if(response.body().size() == 0) {
+                        emptyJobListMeesage.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+
                     for (final JobInfo job : response.body()) {
                         textView = new TextView(getBaseContext());
                         textView.setText(job.Name);
@@ -84,10 +88,10 @@ public class SeekerJobsApplied extends AppCompatActivity {
                         textView.setTextDirection(View.TEXT_DIRECTION_RTL);
                         /* check if there is pending invitation to interview*/
                         if (job.InterviewInfo != null &&
-                                job.InterviewInfo.Status != JsaInterviewStatus.NONE.getValue())
-                            if (job.InterviewInfo.Status == JsaInterviewStatus.PENDING.getValue()) {
+                                job.InterviewInfo.Status != InterviewStatus.NONE.getValue())
+                            if (job.InterviewInfo.Status == InterviewStatus.PENDING.getValue()) {
                                 txtInvitation = new TextView(getBaseContext());
-                                DateFormat df = new SimpleDateFormat("dd/MM/yy");
+                                DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm");
                                 txtInvitation.setText("הזמנה לראיון בתאריך: " + df.format(ServerHelper.dateFromTicks(job.InterviewInfo.ScheduleDate)));
                                 txtInvitation.setTextColor(Color.MAGENTA);
                                 txtInvitation.setPadding(15,0,15,20);

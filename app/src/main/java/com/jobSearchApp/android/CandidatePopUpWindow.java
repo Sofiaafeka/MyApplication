@@ -36,7 +36,7 @@ public class CandidatePopUpWindow extends PopupWindow {
     private String candidateId;
     private int jobId;
     private Button interviewRqstBtn;
-    Calendar calendar;
+    private Date newInterviewDate;
 
     private Activity activity;
     private View layout;
@@ -76,7 +76,7 @@ public class CandidatePopUpWindow extends PopupWindow {
         fullTime = (TextView) layout.findViewById(R.id.full_time_pos);
         mobile = (TextView) layout.findViewById(R.id.mobile);
         candidateUrl = (TextView) layout.findViewById(R.id.candidate_url);
-        interviewRqstBtn = (Button)layout.findViewById(R.id.interviewRqst_btn);
+        interviewRqstBtn = (Button) layout.findViewById(R.id.interviewRqst_btn);
         interviewRqstBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,23 +99,24 @@ public class CandidatePopUpWindow extends PopupWindow {
                 DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
                 TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.time_picker);
 
-                 calendar = new GregorianCalendar(datePicker.getYear(),
+                Calendar calendar = new GregorianCalendar(datePicker.getYear(),
                         datePicker.getMonth(),
                         datePicker.getDayOfMonth(),
                         timePicker.getCurrentHour(),
                         timePicker.getCurrentMinute());
 
                 sendInterviewRequest(calendar.getTime(), alertDialog);
-            }});
+            }
+        });
         alertDialog.setView(dialogView);
         alertDialog.show();
     }
-    public String getInterviewDate(){
-        DateFormat df = new SimpleDateFormat("dd/MM/yy");
-        return df.format(calendar.getTime());
+
+    public Date getInterviewDate() {
+        return newInterviewDate;
     }
 
-    private void sendInterviewRequest(Date date, final Dialog dialog) {
+    private void sendInterviewRequest(final Date date, final Dialog dialog) {
         InterviewRequest interviewRequest = new InterviewRequest();
         interviewRequest.JobId = jobId;
         interviewRequest.SeekerId = candidateId;
@@ -129,7 +130,8 @@ public class CandidatePopUpWindow extends PopupWindow {
                 if (response.isSuccess()) {
                     Toast.makeText(activity, "הבקשה נשלחה למועמד", Toast.LENGTH_LONG).show();
 
-                    if(dialog!=null) {
+                    if (dialog != null) {
+                        newInterviewDate = date;
                         dialog.dismiss();
                     }
 
@@ -149,7 +151,7 @@ public class CandidatePopUpWindow extends PopupWindow {
 
 
     public void showPopup(int gravity, int x, int y, String candidateId, int jobId) {
-        this.jobId=jobId;
+        this.jobId = jobId;
         this.candidateId = candidateId;
         EmployerAPI employerAPI = ServiceGenerator.createServiceWithAuth(EmployerAPI.class);
         Call<Seeker> call = employerAPI.getCandidate(candidateId, jobId);
@@ -182,11 +184,11 @@ public class CandidatePopUpWindow extends PopupWindow {
     private void setCandidate(Seeker candidate) {
         fullName.setText(candidate.FirstName + " " + candidate.LastName);
         yearBirth.setText(Integer.toString(candidate.YearOfBirth));
-        if(candidate.HomeLocation!= null)
+        if (candidate.HomeLocation != null)
             candidateAddress.setText(candidate.HomeLocation.Address);
         candidateDegree.setText(candidate.Degree);
-        if(candidate.FieldOfStudy!= null)
-        fieldOfStudy.setText(" בתחום " + candidate.FieldOfStudy);
+        if (candidate.FieldOfStudy != null)
+            fieldOfStudy.setText(" בתחום " + candidate.FieldOfStudy);
 
 
         if (candidate.Matriculation)
@@ -200,7 +202,7 @@ public class CandidatePopUpWindow extends PopupWindow {
             expert1Years.setText("ניסיון: " + candidate.SkillExperiences.get(0).ExperienceRangeStr);
         }
         if (candidate.SkillExperiences.size() > 1) {
-            expert2.setText(candidate.SkillExperiences.get(1).Skill.Name+ " ");
+            expert2.setText(candidate.SkillExperiences.get(1).Skill.Name + " ");
             expert2Years.setText("ניסיון: " + candidate.SkillExperiences.get(1).ExperienceRangeStr);
         }
         if (candidate.SkillExperiences.size() > 2) {
@@ -208,12 +210,11 @@ public class CandidatePopUpWindow extends PopupWindow {
             expert3Years.setText("ניסיון: " + candidate.SkillExperiences.get(2).ExperienceRangeStr);
         }
         desireSalary.setText(candidate.SalaryRanges);
-        if (candidate.AvailableFrom != null){
+        if (candidate.AvailableFrom != null) {
             Date date = ServerHelper.dateFromTicks(candidate.AvailableFrom);
             DateFormat df = new SimpleDateFormat("dd/MM/yy");
             availability.setText("החל מתאריך:   " + df.format(date));
-        }
-        else
+        } else
             availability.setText(" מיידית");
         if (candidate.FullTime)
             fullTime.setText(" מלאה");

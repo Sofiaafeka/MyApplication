@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+    <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:padding="8dp"
-    android:layout_height="0dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    android:layout_centerVertical="true"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
     <DatePicker
         android:id="@+id/date_picker"
         android:layout_width="match_parent"
         android:datePickerMode="calendar"
-        android:layout_height="0dp"
-        android:layout_weight="4" />
+        android:layout_height="wrap_content"
+        />
 
     <TimePicker
         android:id="@+id/time_picker"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_height="wrap_content"
         android:timePickerMode="spinner"
         android:numbersTextColor="@color/colorAccent"/>
 
@@ -25,8 +29,7 @@
         android:id="@+id/date_time_set"
         android:layout_width="match_parent"
         android:text="שלח"
-        android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_height="wrap_content"
         />
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

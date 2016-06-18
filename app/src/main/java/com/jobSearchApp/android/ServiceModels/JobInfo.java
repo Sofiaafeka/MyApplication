@@ -9,4 +9,5 @@ public class JobInfo {
     public String JobPosition;
     public LocationModel Location;
     public InterviewInfo InterviewInfo;
+    public double MatchLevel;
 }
