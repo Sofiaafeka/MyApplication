@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.jobSearchApp.android.ServiceAPI.EmployerAPI;
 import com.jobSearchApp.android.ServiceModels.JobInfo;
 import com.jobSearchApp.android.ServiceModels.ServiceGenerator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +33,10 @@ import retrofit.Retrofit;
 public class EmployerJobsList extends AppCompatActivity {
 
     TextView jobNameTxt;
-     LinearLayout layout;
-    ImageView trash_icon ;
-    //View horizontalRule;
-
+    LinearLayout layout;
+    ImageView trashIcon;
     List<View> jobsViewlist = new ArrayList<>();
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,41 +44,63 @@ public class EmployerJobsList extends AppCompatActivity {
 
         layout = (LinearLayout) findViewById(R.id.scrollViewLayout);
 
-        trash_icon = new ImageView(getBaseContext());
-        trash_icon.setImageResource(R.drawable.trash_can_icon);
-        LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(150,100);
-        trash_icon.setLayoutParams(layoutParams);
-
         loadJobsList();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+
     }
 
-    private void loadJobsList(){
+    private void loadJobsList() {
         for (View jobView : jobsViewlist) {
             layout.removeView(jobView);
         }
         jobsViewlist.clear();
 
         EmployerAPI employerAPI = ServiceGenerator.createServiceWithAuth(EmployerAPI.class);
-
         Call<List<JobInfo>> call = employerAPI.getJobs();
         call.enqueue(new Callback<List<JobInfo>>() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
             @Override
             public void onResponse(Response<List<JobInfo>> response, Retrofit retrofit) {
 
                 if (response.isSuccess()) {
                     for (final JobInfo job : response.body()) {
                         jobNameTxt = new TextView(getBaseContext());
+                        trashIcon = new ImageView(getBaseContext());
+                        RelativeLayout relativeLayout = new RelativeLayout(getBaseContext());
+
+                        trashIcon.setImageResource(R.drawable.trash_can_icon);
+                        trashIcon.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+
+                        relativeLayout.setLayoutParams(new
+                                RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                                RelativeLayout.LayoutParams.WRAP_CONTENT));
+                        RelativeLayout.LayoutParams layoutParams_AlignLeft =
+                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        layoutParams_AlignLeft.addRule(RelativeLayout.ALIGN_LEFT);
+
+                        RelativeLayout.LayoutParams layoutParams_AlignRight =
+                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        layoutParams_AlignRight.addRule(RelativeLayout.ALIGN_RIGHT);
+
+                        trashIcon.setLayoutParams(layoutParams_AlignLeft);
+                        jobNameTxt.setLayoutParams(layoutParams_AlignRight);
+
                         jobNameTxt.setText(job.Name);
                         jobNameTxt.setTextColor(Color.BLACK);
+                        jobNameTxt.setTextDirection(View.TEXT_DIRECTION_RTL);
                         jobNameTxt.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                         jobNameTxt.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                         jobNameTxt.setPadding(15, 15, 15, 15);
 
+                        relativeLayout.addView(jobNameTxt);
+                        relativeLayout.addView(trashIcon);
                         // Listener for clicking on a job name
                         jobNameTxt.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -87,8 +108,17 @@ public class EmployerJobsList extends AppCompatActivity {
                                 //Open popup window
 
                                 Intent intent = new Intent(getBaseContext(), JobProfile.class);
-                                intent.putExtra("editJob", job.Id);// sending the job id to be edited
+                                // sending the job id to be edited
+                                intent.putExtra("editJob", job.Id);
                                 startActivity(intent);
+                            }
+                        });
+
+                        trashIcon.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // sending the job id to be deleted by server
+                                deleteJob(job.Id);
                             }
                         });
                         /*seperator line view*/
@@ -98,22 +128,12 @@ public class EmployerJobsList extends AppCompatActivity {
                         horizontalRule.setMinimumHeight(2);
                         horizontalRule.setBackgroundColor(Color.BLUE);
 
-                        layout.addView(jobNameTxt);
+                        layout.addView(relativeLayout);
                         layout.addView(horizontalRule);
-                        jobsViewlist.add(jobNameTxt);
+                        jobsViewlist.add(relativeLayout);
                         jobsViewlist.add(horizontalRule);
-                        /* Create a new row to be added. */
-                       /* tableRow = new TableRow(getBaseContext());
-                        tableRow.setGravity(Gravity.RIGHT);
-                        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.FILL_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
-
-                        //tableRow.addView(trash_icon);
-                        tableRow.addView(jobNameTxt);
-                        layout.addView(tableRow, new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
-                        layout.addView(horizontalRule);*/
                     }
-                }
-                else
+                } else
                     Toast.makeText(getBaseContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
             }
 
@@ -125,7 +145,26 @@ public class EmployerJobsList extends AppCompatActivity {
 
     }
 
+    private void deleteJob(int jobId) {
+        EmployerAPI employerAPI = ServiceGenerator.createServiceWithAuth(EmployerAPI.class);
+        Call<Void> call = employerAPI.deleteJob(jobId);
 
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Response<Void> response, Retrofit retrofit) {
+                if (response.isSuccess()) {
+                    Toast.makeText(getBaseContext(), "המשרה הוסרה בהצלחה!", Toast.LENGTH_LONG).show();
+                    loadJobsList();
+                } else
+                    Toast.makeText(getBaseContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getBaseContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
 
 }
