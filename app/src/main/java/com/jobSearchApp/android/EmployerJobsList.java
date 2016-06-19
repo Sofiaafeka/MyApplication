@@ -1,10 +1,13 @@
 package com.jobSearchApp.android;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -30,7 +33,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class EmployerJobsList extends AppCompatActivity {
+public class EmployerJobsList extends Activity {
 
     TextView jobNameTxt;
     LinearLayout layout;
@@ -74,20 +77,21 @@ public class EmployerJobsList extends AppCompatActivity {
                         RelativeLayout relativeLayout = new RelativeLayout(getBaseContext());
 
                         trashIcon.setImageResource(R.drawable.trash_can_icon);
-                        trashIcon.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+
 
                         relativeLayout.setLayoutParams(new
                                 RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
                                 RelativeLayout.LayoutParams.WRAP_CONTENT));
                         RelativeLayout.LayoutParams layoutParams_AlignLeft =
-                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                                         RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        layoutParams_AlignLeft.addRule(RelativeLayout.ALIGN_LEFT);
+                        layoutParams_AlignLeft.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                        layoutParams_AlignLeft.addRule(RelativeLayout.CENTER_VERTICAL);
 
                         RelativeLayout.LayoutParams layoutParams_AlignRight =
-                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                                         RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        layoutParams_AlignRight.addRule(RelativeLayout.ALIGN_RIGHT);
+                        layoutParams_AlignRight.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
                         trashIcon.setLayoutParams(layoutParams_AlignLeft);
                         jobNameTxt.setLayoutParams(layoutParams_AlignRight);
@@ -95,6 +99,7 @@ public class EmployerJobsList extends AppCompatActivity {
                         jobNameTxt.setText(job.Name);
                         jobNameTxt.setTextColor(Color.BLACK);
                         jobNameTxt.setTextDirection(View.TEXT_DIRECTION_RTL);
+                        trashIcon.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
                         jobNameTxt.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
                         jobNameTxt.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                         jobNameTxt.setPadding(15, 15, 15, 15);
@@ -117,8 +122,24 @@ public class EmployerJobsList extends AppCompatActivity {
                         trashIcon.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                // sending the job id to be deleted by server
-                                deleteJob(job.Id);
+                                //confirm with employer the deletion
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(EmployerJobsList.this)
+                                        .setMessage("תבוצע מחיקת משרה כעת")
+                                        .setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                            }
+                                        })
+                                        .setPositiveButton("המשך", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                // sending the job id to be deleted by server
+                                                deleteJob(job.Id);
+                                            }
+                                        });
+                                dialog.show();
                             }
                         });
                         /*seperator line view*/
