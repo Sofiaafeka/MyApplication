@@ -36,7 +36,7 @@ import retrofit.Retrofit;
 public class SeekerJobsApplied extends AppCompatActivity {
 
     LinearLayout layout;
-    TextView textView, txtInvitation, emptyJobListMeesage;
+    TextView textView, txtStatus, emptyJobListMeesage;
     JobDetailPopUpWindow popUp;
     List<View> viewList = new ArrayList<>();
 
@@ -72,7 +72,7 @@ public class SeekerJobsApplied extends AppCompatActivity {
 
                 if (response.isSuccess()) {
 
-                    if(response.body().size() == 0) {
+                    if (response.body().size() == 0) {
                         emptyJobListMeesage.setVisibility(View.VISIBLE);
                         return;
                     }
@@ -87,16 +87,24 @@ public class SeekerJobsApplied extends AppCompatActivity {
                         textView.setPadding(15, 15, 15, 15);
                         textView.setTextDirection(View.TEXT_DIRECTION_RTL);
                         /* check if there is pending invitation to interview*/
-                        if (job.InterviewInfo != null &&
-                                job.InterviewInfo.Status != InterviewStatus.NONE.getValue())
-                            if (job.InterviewInfo.Status == InterviewStatus.PENDING.getValue()) {
-                                txtInvitation = new TextView(getBaseContext());
-                                DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm");
-                                txtInvitation.setText("הזמנה לראיון בתאריך: " + df.format(ServerHelper.dateFromTicks(job.InterviewInfo.ScheduleDate)));
-                                txtInvitation.setTextColor(Color.MAGENTA);
-                                txtInvitation.setPadding(15,0,15,20);
+                        if (job.InterviewInfo != null) {
+                             switch (InterviewStatus.fromInteger(job.InterviewInfo.Status)) {
+                                case NONE:
+                                    txtStatus = new TextView(getBaseContext());
+                                    if (job.InterviewInfo.CandidateProfileViewed)
+                                        txtStatus.setText("- פרופיל נצפה על ידי המעסיק");
+                                    txtStatus.setTextColor(Color.GRAY);
+                                    txtStatus.setPadding(15, 0, 15, 20);
+                                    break;
+                                case PENDING:
+                                    txtStatus = new TextView(getBaseContext());
+                                    DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm");
+                                    txtStatus.setText("הזמנה לראיון בתאריך: " + df.format(ServerHelper.dateFromTicks(job.InterviewInfo.ScheduleDate)));
+                                    txtStatus.setTextColor(Color.MAGENTA);
+                                    txtStatus.setPadding(15, 0, 15, 20);
+                                    break;
                             }
-
+                        }
                         // Listener for clicking on a job name
                         textView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -116,16 +124,15 @@ public class SeekerJobsApplied extends AppCompatActivity {
 
                         layout.addView(textView);
                         viewList.add(textView);
-                        if (txtInvitation != null) {
-                            layout.addView(txtInvitation);
-                            viewList.add(txtInvitation);
-                            txtInvitation = null;
+                        if (txtStatus != null) {
+                            layout.addView(txtStatus);
+                            viewList.add(txtStatus);
+                            txtStatus = null;
                         }
                         layout.addView(horizontalRule);
                         viewList.add(horizontalRule);
                     }
-                }
-                else
+                } else
                     Toast.makeText(getBaseContext(), response.errorBody().toString(), Toast.LENGTH_LONG).show();
             }
 
@@ -165,7 +172,7 @@ public class SeekerJobsApplied extends AppCompatActivity {
         popUp.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                if(popUp.getIsApplyRemoved())
+                if (popUp.getIsApplyRemoved())
                     loadJobList();
             }
         });
